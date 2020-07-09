@@ -7,7 +7,7 @@ class Player(object):
     ACCELERATION = 1
     VELOCITY_MAX = 200 * ACCELERATION
     JUMP_MAX = 4 * ELEMENT_SIZE
-    GRAVITY_ACCELERATION = 1
+    # GRAVITY_ACCELERATION = 1
 
     # Mario images.
     WALK_RIGHT = [load_mario_image('r1.png'), load_mario_image('r2.png'), load_mario_image('r3.png')]
@@ -23,8 +23,8 @@ class Player(object):
         self.velocity = 0
         self.walkCount = 0
         self.isJump = False
-        self.jumpSpeed = 0
-        self.fallingSpeed = 0
+        self.jumpCount = 0
+        # self.fallingSpeed = 0
 
     def set_key(self, key):
         self.key = key
@@ -38,10 +38,10 @@ class Player(object):
             self.velocity -= Player.ACCELERATION
 
     def jump(self):
-        self.position.change_position(0, -self.jumpSpeed)
+        self.position.change_position(0, -1)
 
     def fall(self):
-        self.position.change_position(0, self.fallingSpeed)
+        self.position.change_position(0, 1)
 
     def draw(self, screen):
         if self.isJump:
