@@ -24,3 +24,8 @@ def get_list_blocks(path_world):
         blocks.append(line)
     file.close()
     return blocks
+
+
+def is_legal_block(char):
+    s = ['*', 'c', 'm', 's']
+    return char in s

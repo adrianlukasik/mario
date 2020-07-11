@@ -7,6 +7,9 @@ class Player(object):
     ACCELERATION = 1
     VELOCITY_MAX = 200 * ACCELERATION
     JUMP_MAX = 4 * ELEMENT_SIZE
+    JUMP_SPEED = 2
+    WALK_COUNT_RANGE = 7
+    WALK_COUNT_MAX = 3 * WALK_COUNT_RANGE
     # GRAVITY_ACCELERATION = 1
 
     # Mario images.
@@ -24,6 +27,7 @@ class Player(object):
         self.walkCount = 0
         self.isJump = False
         self.jumpCount = 0
+        self.topJump = False
         # self.fallingSpeed = 0
 
     def set_key(self, key):
@@ -35,15 +39,19 @@ class Player(object):
 
     def decrease_velocity(self):
         if self.velocity > 0:
-            self.velocity -= Player.ACCELERATION
+            self.velocity -= 2 * Player.ACCELERATION
+            if self.velocity < 0:
+                self.velocity = 0
 
     def jump(self):
-        self.position.change_position(0, -1)
+        self.position.change_position(0, -Player.JUMP_SPEED)
+        self.jumpCount += Player.JUMP_SPEED
 
     def fall(self):
-        self.position.change_position(0, 1)
+        self.position.change_position(0, Player.JUMP_SPEED)
 
     def draw(self, screen):
+        pygame.draw.rect(screen, RED, (self.position.get_x(), self.position.get_y(), ELEMENT_SIZE, ELEMENT_SIZE))
         if self.isJump:
             if self.key == pygame.K_RIGHT:
                 screen.blit(Player.JUMP_RIGHT, self.position.get_position())
@@ -55,8 +63,43 @@ class Player(object):
             else:
                 screen.blit(Player.STAND_LEFT, self.position.get_position())
         elif self.key == pygame.K_RIGHT:
-            self.walkCount %= 24
-            screen.blit(Player.WALK_RIGHT[self.walkCount // 8], self.position)
+            self.walkCount %= Player.WALK_COUNT_MAX
+            screen.blit(Player.WALK_RIGHT[self.walkCount // Player.WALK_COUNT_RANGE], self.position.get_position())
         else:
-            self.walkCount %= 24
-            screen.blit(Player.WALK_LEFT[self.walkCount // 8], self.position)
+            self.walkCount %= Player.WALK_COUNT_MAX
+            screen.blit(Player.WALK_LEFT[self.walkCount // Player.WALK_COUNT_RANGE], self.position.get_position())
+
+    def get_is_jump(self):
+        return self.isJump
+
+    def set_is_jump(self, boolean):
+        self.isJump = boolean
+
+    def get_position_x(self):
+        return self.position.get_x()
+
+    def get_position_y(self):
+        return self.position.get_y()
+
+    def increase_walk_count(self):
+        self.walkCount += 1
+
+    def get_velocity(self):
+        return self.velocity
+
+    def get_top_jump(self):
+        return self.topJump
+
+    def gain_top_jump(self):
+        self.topJump = True
+
+    def is_max_jump_count(self):
+        return self.jumpCount == Player.JUMP_MAX
+
+    def end_fall(self):
+        self.topJump = False
+        self.isJump = False
+        self.jumpCount = 0
+
+    def begin_jump(self):
+        self.isJump = True

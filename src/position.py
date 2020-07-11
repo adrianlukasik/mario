@@ -16,3 +16,6 @@ class Position(object):
         self.x += x
         self.y += y
 
+    def scale_position(self, scalar):
+        self.x //= scalar
+        self.y //= scalar
