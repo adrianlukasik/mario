@@ -24,7 +24,7 @@ class Game(object):
         self.run = True
         self.player = Player()
         self.board = Board(Game.WORLD_PATH)
-        self.position = Position(0, 0)
+        self.position = Position((0, 0))
         self.jumpSound = pygame.mixer.Sound(Game.JUMP_SOUND_PATH)
         self.execute()
 
@@ -38,6 +38,9 @@ class Game(object):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.run = False
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_UP and not self.player.get_is_jump():
+                self.player.begin_jump()
+                self.jumpSound.play()
 
     def make_move(self, keys):
         if keys[pygame.K_RIGHT]:
@@ -59,12 +62,9 @@ class Game(object):
             keys = pygame.key.get_pressed()
             if not self.player.get_is_jump():
                 if self.check_down():
+                    self.player.begin_jump()
+                    self.player.gain_top_jump()
                     self.player.fall()
-                else:
-                    if keys[pygame.K_UP]:
-                        self.player.begin_jump()
-                        self.jumpSound.play()
-                        self.set_player_height()
             else:
                 self.set_player_height()
             self.make_move(keys)
@@ -97,7 +97,7 @@ class Game(object):
         return self.is_legal_point(p1[0] + distance, p1[1]) and self.is_legal_point(p2[0] + distance, p2[1])
 
     def is_legal_point(self, x, y):
-        point = Position(x, y)
+        point = Position((x, y))
         point.change_position(self.position.get_x(), self.position.get_y())
         point.scale_position(ELEMENT_SIZE)
         return is_legal_block(self.board.get_block(point.get_x(), point.get_y()))

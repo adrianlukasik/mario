@@ -21,7 +21,7 @@ class Board(object):
         for i in range(len(self.blocks)):
             for j in range(len(self.blocks[i])):
                 block = self.blocks[i][j]
-                position = Position(j * ELEMENT_SIZE - game_position.get_x(), i * ELEMENT_SIZE)
+                position = Position((j * ELEMENT_SIZE - game_position.get_x(), i * ELEMENT_SIZE))
                 if block == 'b':
                     screen.blit(Board.BRICK, position.get_position())
                 elif block == '#':

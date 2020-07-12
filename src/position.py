@@ -1,7 +1,7 @@
 class Position(object):
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+    def __init__(self, point):
+        self.x = point[0]
+        self.y = point[1]
 
     def get_x(self):
         return self.x

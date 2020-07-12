@@ -10,6 +10,7 @@ class Player(object):
     JUMP_SPEED = 2
     WALK_COUNT_RANGE = 7
     WALK_COUNT_MAX = 3 * WALK_COUNT_RANGE
+    START_POSITION = WIDTH // 2, HEIGHT - 3 * ELEMENT_SIZE
     # GRAVITY_ACCELERATION = 1
 
     # Mario images.
@@ -21,7 +22,7 @@ class Player(object):
     JUMP_LEFT = load_mario_image('l_jump.png')
 
     def __init__(self):
-        self.position = Position(WIDTH // 2, HEIGHT - 3 * ELEMENT_SIZE)
+        self.position = Position(Player.START_POSITION)
         self.key = pygame.K_RIGHT
         self.velocity = 0
         self.walkCount = 0
