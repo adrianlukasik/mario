@@ -44,7 +44,11 @@ class Game(object):
 
     def make_move(self, keys):
         if keys[pygame.K_RIGHT]:
+            self.player.set_key(pygame.K_RIGHT)
             self.player.increase_velocity()
+        elif keys[pygame.K_LEFT]:
+            self.player.set_key(pygame.K_LEFT)
+            self.player.change_player_position((-1, 0))
         else:
             self.player.decrease_velocity()
         rescale_velocity = self.get_rescale_velocity()

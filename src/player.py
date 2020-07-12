@@ -59,6 +59,9 @@ class Player(object):
             if self.velocity < 0:
                 self.velocity = 0
 
+    def change_player_position(self, point):
+        self.position.change_position(point[0], point[1])
+
     def jump(self):
         self.position.change_position(0, -Player.JUMP_SPEED)
         self.jumpCount += Player.JUMP_SPEED
