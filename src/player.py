@@ -30,6 +30,21 @@ class Player(object):
         self.topJump = False
         # self.fallingSpeed = 0
 
+    def get_corner(self, dx, dy):
+        return self.position.get_x() + dx, self.position.get_y() + dy
+
+    def get_bottom_left_corner(self):
+        return self.get_corner(0, ELEMENT_SIZE - 1)
+
+    def get_top_left_corner(self):
+        return self.get_corner(0, 0)
+
+    def get_top_right_corner(self):
+        return self.get_corner(ELEMENT_SIZE - 1, 0)
+
+    def get_bottom_right_corner(self):
+        return self.get_corner(ELEMENT_SIZE - 1, ELEMENT_SIZE - 1)
+
     def set_key(self, key):
         self.key = key
 

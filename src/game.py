@@ -44,11 +44,13 @@ class Game(object):
             self.player.increase_velocity()
         else:
             self.player.decrease_velocity()
-        if self.check_right():
-            self.position.change_position(self.rescale_velocity(), 0)
+        rescale_velocity = self.get_rescale_velocity()
+        while not self.check_right(rescale_velocity):
+            rescale_velocity -= 1
+        self.position.change_position(rescale_velocity, 0)
         self.player.increase_walk_count()
 
-    def rescale_velocity(self):
+    def get_rescale_velocity(self):
         return self.player.get_velocity() // Game.VELOCITY_SCALE
 
     def ticking(self):
@@ -79,19 +81,23 @@ class Game(object):
             self.player.end_fall()
 
     def check_up(self):
-        return self.is_legal_point(0, -1) and self.is_legal_point(ELEMENT_SIZE - 1, -1)
+        p1 = self.player.get_top_right_corner()
+        p2 = self.player.get_top_left_corner()
+        return self.is_legal_point(p1[0], p1[1] - 1) and self.is_legal_point(p2[0], p2[1] - 1)
 
+    # Będzie można poprawić żeby nie spadać o stałą odległość tylko uwzględniając przyspieszenie grawitacyjne.
     def check_down(self):
-        return self.is_legal_point(0, ELEMENT_SIZE) and self.is_legal_point(ELEMENT_SIZE - 1, ELEMENT_SIZE)
+        p1 = self.player.get_bottom_right_corner()
+        p2 = self.player.get_bottom_left_corner()
+        return self.is_legal_point(p1[0], p1[1] + 1) and self.is_legal_point(p2[0], p2[1] + 1)
 
-    def check_right(self):
-        return self.is_legal_point(ELEMENT_SIZE, 0) and self.is_legal_point(ELEMENT_SIZE, ELEMENT_SIZE - 1)
+    def check_right(self, distance):
+        p1 = self.player.get_top_right_corner()
+        p2 = self.player.get_bottom_right_corner()
+        return self.is_legal_point(p1[0] + distance, p1[1]) and self.is_legal_point(p2[0] + distance, p2[1])
 
-    def check_left(self):
-        return self.is_legal_point(-1, 0) and self.is_legal_point(-1, ELEMENT_SIZE - 1)
-
-    def is_legal_point(self, dx, dy):
-        point = Position(self.player.get_position_x() + dx, self.player.get_position_y() + dy)
+    def is_legal_point(self, x, y):
+        point = Position(x, y)
         point.change_position(self.position.get_x(), self.position.get_y())
         point.scale_position(ELEMENT_SIZE)
         return is_legal_block(self.board.get_block(point.get_x(), point.get_y()))
