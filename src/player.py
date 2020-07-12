@@ -66,7 +66,6 @@ class Player(object):
         self.position.change_position(0, Player.JUMP_SPEED)
 
     def draw(self, screen):
-        pygame.draw.rect(screen, RED, (self.position.get_x(), self.position.get_y(), ELEMENT_SIZE, ELEMENT_SIZE))
         if self.isJump:
             if self.key == pygame.K_RIGHT:
                 screen.blit(Player.JUMP_RIGHT, self.position.get_position())

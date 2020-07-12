@@ -22,8 +22,6 @@ class Board(object):
             for j in range(len(self.blocks[i])):
                 block = self.blocks[i][j]
                 position = Position(j * ELEMENT_SIZE - game_position.get_x(), i * ELEMENT_SIZE)
-                if not is_legal_block(block):
-                    pygame.draw.rect(screen, BLUE, (position.get_x(), position.get_y(), ELEMENT_SIZE, ELEMENT_SIZE))
                 if block == 'b':
                     screen.blit(Board.BRICK, position.get_position())
                 elif block == '#':
