@@ -25,6 +25,7 @@ class Player(object):
         self.position = Position(Player.START_POSITION)
         self.key = pygame.K_RIGHT
         self.velocity = 0
+        self.leftVelocity = 0
         self.walkCount = 0
         self.isJump = False
         self.jumpCount = 0
@@ -46,6 +47,15 @@ class Player(object):
     def get_bottom_right_corner(self):
         return self.get_corner(ELEMENT_SIZE - 1, ELEMENT_SIZE - 1)
 
+    def get_key(self):
+        return self.key
+
+    def get_positions_difference(self):
+        return Player.START_POSITION[0] - self.position.get_x(), Player.START_POSITION[1] - self.position.get_y()
+
+    def is_start_position(self):
+        return self.position.is_same_positions(Player.START_POSITION)
+
     def set_key(self, key):
         self.key = key
 
@@ -53,11 +63,21 @@ class Player(object):
         if self.velocity < Player.VELOCITY_MAX:
             self.velocity += Player.ACCELERATION
 
+    def increase_left_velocity(self):
+        if self.leftVelocity < Player.VELOCITY_MAX:
+            self.leftVelocity += Player.ACCELERATION
+
     def decrease_velocity(self):
         if self.velocity > 0:
             self.velocity -= 2 * Player.ACCELERATION
             if self.velocity < 0:
                 self.velocity = 0
+
+    def decrease_left_velocity(self):
+        if self.leftVelocity > 0:
+            self.leftVelocity -= 2 * Player.ACCELERATION
+            if self.leftVelocity < 0:
+                self.leftVelocity = 0
 
     def change_player_position(self, point):
         self.position.change_position(point[0], point[1])
@@ -75,7 +95,7 @@ class Player(object):
                 screen.blit(Player.JUMP_RIGHT, self.position.get_position())
             else:
                 screen.blit(Player.JUMP_LEFT, self.position.get_position())
-        elif self.velocity == 0:
+        elif self.velocity == 0 and self.leftVelocity == 0:
             if self.key == pygame.K_RIGHT:
                 screen.blit(Player.STAND_RIGHT, self.position.get_position())
             else:
@@ -104,6 +124,9 @@ class Player(object):
 
     def get_velocity(self):
         return self.velocity
+
+    def get_left_velocity(self):
+        return self.leftVelocity
 
     def get_top_jump(self):
         return self.topJump

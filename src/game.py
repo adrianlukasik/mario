@@ -48,17 +48,35 @@ class Game(object):
             self.player.increase_velocity()
         elif keys[pygame.K_LEFT]:
             self.player.set_key(pygame.K_LEFT)
-            self.player.change_player_position((-1, 0))
+            self.player.increase_left_velocity()
         else:
             self.player.decrease_velocity()
-        rescale_velocity = self.get_rescale_velocity()
-        while not self.check_right(rescale_velocity):
-            rescale_velocity -= 1
-        self.position.change_position(rescale_velocity, 0)
+            self.player.decrease_left_velocity()
+
+        if self.player.get_key() == pygame.K_RIGHT:
+            rescale_velocity = self.get_rescale_velocity()
+            while not self.check_right(rescale_velocity):
+                rescale_velocity -= 1
+            if self.player.is_start_position():
+                self.position.change_position(rescale_velocity, 0)
+            else:
+                difference = self.player.get_positions_difference()
+                self.player.change_player_position((min(rescale_velocity, difference[0]), 0))
+                if rescale_velocity - difference[0] > 0:
+                    self.position.change_position(rescale_velocity - difference[0], 0)
+        else:
+            rescale_left_velocity = self.get_rescale_left_velocity()
+            while not self.check_left(rescale_left_velocity):
+                rescale_left_velocity -= 1
+            self.player.change_player_position((-rescale_left_velocity, 0))
+
         self.player.increase_walk_count()
 
     def get_rescale_velocity(self):
         return self.player.get_velocity() // Game.VELOCITY_SCALE
+
+    def get_rescale_left_velocity(self):
+        return self.player.get_left_velocity() // Game.VELOCITY_SCALE
 
     def ticking(self):
         self.tps_delta += self.tps_clock.tick() / 1000.0
@@ -89,7 +107,6 @@ class Game(object):
         p2 = self.player.get_top_left_corner()
         return self.is_legal_point(p1[0], p1[1] - 1) and self.is_legal_point(p2[0], p2[1] - 1)
 
-    # Będzie można poprawić żeby nie spadać o stałą odległość tylko uwzględniając przyspieszenie grawitacyjne.
     def check_down(self):
         p1 = self.player.get_bottom_right_corner()
         p2 = self.player.get_bottom_left_corner()
@@ -99,6 +116,11 @@ class Game(object):
         p1 = self.player.get_top_right_corner()
         p2 = self.player.get_bottom_right_corner()
         return self.is_legal_point(p1[0] + distance, p1[1]) and self.is_legal_point(p2[0] + distance, p2[1])
+
+    def check_left(self, distance):
+        p1 = self.player.get_top_left_corner()
+        p2 = self.player.get_bottom_left_corner()
+        return self.is_legal_point(p1[0] - distance, p1[1]) and self.is_legal_point(p2[0] - distance, p2[1])
 
     def is_legal_point(self, x, y):
         point = Position((x, y))

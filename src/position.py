@@ -19,3 +19,6 @@ class Position(object):
     def scale_position(self, scalar):
         self.x //= scalar
         self.y //= scalar
+
+    def is_same_positions(self, point):
+        return self.x == point[0] and self.y == point[1]
