@@ -9,6 +9,7 @@ import pygame
 class Game(object):
     WORLD_PATH = '../worlds/world1-1.txt'
     JUMP_SOUND_PATH = '../sounds/jump.wav'
+    COIN_SOUND_PATH = '../sounds/coin.wav'
     MAIN_THEME_PATH = '../sounds/main-theme.mp3'
 
     VELOCITY_SCALE = 50
@@ -26,6 +27,7 @@ class Game(object):
         self.board = Board(Game.WORLD_PATH)
         self.position = Position((0, 0))
         self.jumpSound = pygame.mixer.Sound(Game.JUMP_SOUND_PATH)
+        self.coinSound = pygame.mixer.Sound(Game.COIN_SOUND_PATH)
         self.execute()
 
     def execute(self):
@@ -99,8 +101,22 @@ class Game(object):
             self.player.jump()
         if not self.player.get_top_jump() and (self.player.is_max_jump_count() or not self.check_up()):
             self.player.gain_top_jump()
+            if not self.check_up() and self.is_question_mark():
+                self.coinSound.play()
         if self.player.get_top_jump() and not self.check_down():
             self.player.end_fall()
+
+    def is_question_mark(self):
+        p1 = self.player.get_top_left_corner()
+        p2 = self.player.get_top_right_corner()
+        return self.get_char((p1[0], p1[1] - 1)) == '?' or self.get_char((p2[0], p2[1] - 1)) == '?'
+
+    def get_char(self, p):
+        point = Position((p[0], p[1]))
+        point.change_position(self.position.get_x(), self.position.get_y())
+        point.scale_position(ELEMENT_SIZE)
+        return self.board.get_block(point.get_x(), point.get_y())
+
 
     def check_up(self):
         p1 = self.player.get_top_right_corner()
