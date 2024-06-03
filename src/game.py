@@ -1,22 +1,22 @@
-from src.parameters import *
-from src.player import Player
-from src.board import Board
-from src.position import Position
-from src.load import is_legal_block
+from parameters import *
+from player import Player
+from board import Board
+from position import Position
+from load import is_legal_block
 import pygame
 
 
 class Game(object):
-    WORLD_PATH = '../worlds/world1-1.txt'
-    JUMP_SOUND_PATH = '../sounds/jump.wav'
-    COIN_SOUND_PATH = '../sounds/coin.wav'
-    MAIN_THEME_PATH = '../sounds/main-theme.mp3'
+    WORLD_PATH = "./worlds/world1-1.txt"
+    JUMP_SOUND_PATH = "./sounds/jump.wav"
+    COIN_SOUND_PATH = "./sounds/coin.wav"
+    MAIN_THEME_PATH = "./sounds/main-theme.mp3"
 
     VELOCITY_SCALE = 50
 
     def __init__(self):
         pygame.init()
-        pygame.display.set_caption('Mario')
+        pygame.display.set_caption("Mario")
         pygame.mixer.music.load(Game.MAIN_THEME_PATH)
         pygame.mixer.music.play(-1)
         self.screen = pygame.display.set_mode(RESOLUTION)
@@ -40,7 +40,11 @@ class Game(object):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.run = False
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_UP and not self.player.get_is_jump():
+            if (
+                event.type == pygame.KEYDOWN
+                and event.key == pygame.K_UP
+                and not self.player.get_is_jump()
+            ):
                 self.player.begin_jump()
                 self.jumpSound.play()
 
@@ -63,7 +67,9 @@ class Game(object):
                 self.position.change_position(rescale_velocity, 0)
             else:
                 difference = self.player.get_positions_difference()
-                self.player.change_player_position((min(rescale_velocity, difference[0]), 0))
+                self.player.change_player_position(
+                    (min(rescale_velocity, difference[0]), 0)
+                )
                 if rescale_velocity - difference[0] > 0:
                     self.position.change_position(rescale_velocity - difference[0], 0)
         else:
@@ -99,10 +105,14 @@ class Game(object):
             self.player.fall()
         if not self.player.get_top_jump() and not self.player.is_max_jump_count():
             self.player.jump()
-        if not self.player.get_top_jump() and (self.player.is_max_jump_count() or not self.check_up()):
+        if not self.player.get_top_jump() and (
+            self.player.is_max_jump_count() or not self.check_up()
+        ):
             self.player.gain_top_jump()
             if not self.check_up() and self.is_question_mark():
-                if not self.board.is_in_changed_blocks(self.get_position_question_mark()):
+                if not self.board.is_in_changed_blocks(
+                    self.get_position_question_mark()
+                ):
                     self.coinSound.play()
                     self.board.add_changed_block(self.get_position_question_mark())
         if self.player.get_top_jump() and not self.check_down():
@@ -111,12 +121,15 @@ class Game(object):
     def is_question_mark(self):
         p1 = self.player.get_top_left_corner()
         p2 = self.player.get_top_right_corner()
-        return self.get_char((p1[0], p1[1] - 1)) == '?' or self.get_char((p2[0], p2[1] - 1)) == '?'
+        return (
+            self.get_char((p1[0], p1[1] - 1)) == "?"
+            or self.get_char((p2[0], p2[1] - 1)) == "?"
+        )
 
     def get_position_question_mark(self):
         p1 = self.player.get_top_left_corner()
         p2 = self.player.get_top_right_corner()
-        if self.get_char((p1[0], p1[1] - 1)) == '?':
+        if self.get_char((p1[0], p1[1] - 1)) == "?":
             return self.get_position_char((p1[0], p1[1] - 1))
         else:
             return self.get_position_char((p2[0], p2[1] - 1))
@@ -136,22 +149,30 @@ class Game(object):
     def check_up(self):
         p1 = self.player.get_top_right_corner()
         p2 = self.player.get_top_left_corner()
-        return self.is_legal_point(p1[0], p1[1] - 1) and self.is_legal_point(p2[0], p2[1] - 1)
+        return self.is_legal_point(p1[0], p1[1] - 1) and self.is_legal_point(
+            p2[0], p2[1] - 1
+        )
 
     def check_down(self):
         p1 = self.player.get_bottom_right_corner()
         p2 = self.player.get_bottom_left_corner()
-        return self.is_legal_point(p1[0], p1[1] + 1) and self.is_legal_point(p2[0], p2[1] + 1)
+        return self.is_legal_point(p1[0], p1[1] + 1) and self.is_legal_point(
+            p2[0], p2[1] + 1
+        )
 
     def check_right(self, distance):
         p1 = self.player.get_top_right_corner()
         p2 = self.player.get_bottom_right_corner()
-        return self.is_legal_point(p1[0] + distance, p1[1]) and self.is_legal_point(p2[0] + distance, p2[1])
+        return self.is_legal_point(p1[0] + distance, p1[1]) and self.is_legal_point(
+            p2[0] + distance, p2[1]
+        )
 
     def check_left(self, distance):
         p1 = self.player.get_top_left_corner()
         p2 = self.player.get_bottom_left_corner()
-        return self.is_legal_point(p1[0] - distance, p1[1]) and self.is_legal_point(p2[0] - distance, p2[1])
+        return self.is_legal_point(p1[0] - distance, p1[1]) and self.is_legal_point(
+            p2[0] - distance, p2[1]
+        )
 
     def is_legal_point(self, x, y):
         point = Position((x, y))

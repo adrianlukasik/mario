@@ -1,7 +1,7 @@
 import pygame
 
-IMAGES_MARIO_PATH = '../images/mario/'
-IMAGES_BOARD_PATH = '../images/board/'
+IMAGES_MARIO_PATH = "./images/mario/"
+IMAGES_BOARD_PATH = "./images/board/"
 
 
 def load_image(path, name):
@@ -27,5 +27,5 @@ def get_list_blocks(path_world):
 
 
 def is_legal_block(char):
-    s = ['*', 'c', 'm', 's']
+    s = ["*", "c", "m", "s"]
     return char in s

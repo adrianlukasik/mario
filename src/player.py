@@ -1,6 +1,6 @@
-from src.parameters import *
-from src.position import *
-from src.load import *
+from parameters import *
+from position import *
+from load import *
 
 
 class Player(object):
@@ -14,12 +14,20 @@ class Player(object):
     # GRAVITY_ACCELERATION = 1
 
     # Mario images.
-    WALK_RIGHT = [load_mario_image('r1.png'), load_mario_image('r2.png'), load_mario_image('r3.png')]
-    STAND_RIGHT = load_mario_image('r.png')
-    JUMP_RIGHT = load_mario_image('r_jump.png')
-    WALK_LEFT = [load_mario_image('l1.png'), load_mario_image('l2.png'), load_mario_image('l3.png')]
-    STAND_LEFT = load_mario_image('l.png')
-    JUMP_LEFT = load_mario_image('l_jump.png')
+    WALK_RIGHT = [
+        load_mario_image("r1.png"),
+        load_mario_image("r2.png"),
+        load_mario_image("r3.png"),
+    ]
+    STAND_RIGHT = load_mario_image("r.png")
+    JUMP_RIGHT = load_mario_image("r_jump.png")
+    WALK_LEFT = [
+        load_mario_image("l1.png"),
+        load_mario_image("l2.png"),
+        load_mario_image("l3.png"),
+    ]
+    STAND_LEFT = load_mario_image("l.png")
+    JUMP_LEFT = load_mario_image("l_jump.png")
 
     def __init__(self):
         self.position = Position(Player.START_POSITION)
@@ -51,7 +59,10 @@ class Player(object):
         return self.key
 
     def get_positions_difference(self):
-        return Player.START_POSITION[0] - self.position.get_x(), Player.START_POSITION[1] - self.position.get_y()
+        return (
+            Player.START_POSITION[0] - self.position.get_x(),
+            Player.START_POSITION[1] - self.position.get_y(),
+        )
 
     def is_start_position(self):
         return self.position.is_same_positions(Player.START_POSITION)
@@ -102,10 +113,16 @@ class Player(object):
                 screen.blit(Player.STAND_LEFT, self.position.get_position())
         elif self.key == pygame.K_RIGHT:
             self.walkCount %= Player.WALK_COUNT_MAX
-            screen.blit(Player.WALK_RIGHT[self.walkCount // Player.WALK_COUNT_RANGE], self.position.get_position())
+            screen.blit(
+                Player.WALK_RIGHT[self.walkCount // Player.WALK_COUNT_RANGE],
+                self.position.get_position(),
+            )
         else:
             self.walkCount %= Player.WALK_COUNT_MAX
-            screen.blit(Player.WALK_LEFT[self.walkCount // Player.WALK_COUNT_RANGE], self.position.get_position())
+            screen.blit(
+                Player.WALK_LEFT[self.walkCount // Player.WALK_COUNT_RANGE],
+                self.position.get_position(),
+            )
 
     def get_is_jump(self):
         return self.isJump
